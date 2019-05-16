@@ -157,6 +157,7 @@ int main(void)
         2, 3, 0
     };
 
+    // Bind the vertex buffer
     unsigned int buffer;
     GLCall(glGenBuffers(1, &buffer));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
@@ -173,6 +174,7 @@ int main(void)
                                  0));                   // the offset of the first component of the first generic vertex attribute
                                                         // in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target
 
+    // Bind the index buffer
     unsigned int ibo;
     GLCall(glGenBuffers(1, &ibo));
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
