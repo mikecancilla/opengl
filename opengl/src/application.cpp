@@ -113,6 +113,11 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
     return program;
 }
 
+
+///////
+// MAIN
+///////
+
 int main(void)
 {
     GLFWwindow* window;
@@ -133,7 +138,10 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
-    glewInit();
+    glfwSwapInterval(1);
+
+    if(glewInit() != GLEW_OK)
+        std::cout << "Glew Initialization Error!" << std::endl;
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
@@ -168,8 +176,21 @@ int main(void)
     //std::cout << "FRAGMENT" << std::endl;
     //std::cout << source.FragmentSource << std::endl;
 
+    // Compile the shader
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
+
+    // Bind the shader
     GLCall(glUseProgram(shader));
+
+    // Retrieve the location of a uniform variable in the shader
+    GLCall(int location = glGetUniformLocation(shader, "u_Color"));
+    ASSERT(location != -1);
+
+    // Modify a uniform variable in the shader
+    GLCall(glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f));
+
+    float r = 0.f;
+    float increment = 0.05f;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -187,7 +208,15 @@ int main(void)
         GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
         */
 
+        GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+        if(r > 1.f)
+            increment = -0.05f;
+        else if (r < 0.f)
+            increment = 0.05f;
+
+        r += increment;
 
         /* Swap front and back buffers */
         GLCall(glfwSwapBuffers(window));
@@ -198,7 +227,7 @@ int main(void)
 
     GLCall(glDeleteProgram(shader));
 
-    GLCall(glfwTerminate());
+    glfwTerminate();
 
     return 0;
 }
