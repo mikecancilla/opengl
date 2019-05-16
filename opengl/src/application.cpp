@@ -199,6 +199,10 @@ int main(void)
     // Modify a uniform variable in the shader
     GLCall(glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f));
 
+    GLCall(glUseProgram(0));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
     float r = 0.f;
     float increment = 0.05f;
 
@@ -218,7 +222,23 @@ int main(void)
         GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
         */
 
+        GLCall(glUseProgram(shader));
         GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
+
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
+        GLCall(glEnableVertexAttribArray(0));
+
+        // Define the layout of the data in the vertex buffer
+        GLCall(glVertexAttribPointer(0,                        // index
+                                        2,                     // number of components per generic vertex attribute.  Must be 1, 2, 3, 4
+                                        GL_FLOAT,              // type
+                                        GL_FALSE,              // normalized
+                                        sizeof(float) * 2,     // stride, byte offset between consecutive generic vertex attributes
+                                        0));                   // the offset of the first component of the first generic vertex attribute
+                                                               // in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target
+
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         if(r > 1.f)
