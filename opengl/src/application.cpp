@@ -160,10 +160,18 @@ int main(void)
     unsigned int buffer;
     GLCall(glGenBuffers(1, &buffer));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 2 * 4 * sizeof(float), positions, GL_STATIC_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
 
     GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
+
+    // Define the layout of the data in the vertex buffer
+    GLCall(glVertexAttribPointer(0,                     // index
+                                 2,                     // number of components per generic vertex attribute.  Must be 1, 2, 3, 4
+                                 GL_FLOAT,              // type
+                                 GL_FALSE,              // normalized
+                                 sizeof(float) * 2,     // stride, byte offset between consecutive generic vertex attributes
+                                 0));                   // the offset of the first component of the first generic vertex attribute
+                                                        // in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target
 
     unsigned int ibo;
     GLCall(glGenBuffers(1, &ibo));
