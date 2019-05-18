@@ -8,9 +8,11 @@
 
 #include "Renderer.h"
 #include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
+#include "Texture.h"
 
 ///////
 // MAIN
@@ -49,10 +51,10 @@ int main(void)
 
     {
         float positions[] = {
-            -0.5f, -0.5f,
-             0.5f, -0.5f,
-             0.5f,  0.5f,
-            -0.5f,  0.5f
+            -0.5f, -0.5f, 0.f, 0.f, // Bottom Left, 0
+             0.5f, -0.5f, 1.f, 0.f, // Bottom Right, 1
+             0.5f,  0.5f, 1.f, 1.f, // Top Right, 2
+            -0.5f,  0.5f, 0.f, 1.f  // Top Left, 3
         };
 
         unsigned int indicies[] = {
@@ -60,14 +62,18 @@ int main(void)
             2, 3, 0
         };
 
+        GLCall(glEnable(GL_BLEND));
+        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
         // Create and Bind the vertex array
         VertexArray va;
 
         // Create and Bind the vertex buffer
-        VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+        VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 
         // Define the layout of the vertex buffer memory
         VertexBufferLayout layout;
+        layout.Push<float>(2);
         layout.Push<float>(2);
         va.AddBuffer(vb, layout);
 
@@ -83,11 +89,17 @@ int main(void)
         // Modify a uniform variable in the shader
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 
+        Texture texture("res/textures/ChernoLogo.png");
+        texture.Bind();
+        shader.SetUniform1i("u_Texture", 0);
+
         // Clear our state
         va.UnBind();
         vb.UnBind();
         ib.UnBind();
         shader.UnBind();
+
+        Renderer renderer;
 
         float r = 0.f;
         float increment = 0.05f;
@@ -96,7 +108,7 @@ int main(void)
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
-            GLCall(glClear(GL_COLOR_BUFFER_BIT));
+            renderer.Clear();
 
             // Bind our shader
             shader.Bind();
@@ -104,11 +116,7 @@ int main(void)
             // Modify a uniform variable in the shader
             shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
-            // Bind our vertex array object
-            va.Bind();
-
-            // Bind our index buffer
-            ib.Bind();
+            renderer.Draw(va, ib, shader);
 
             // Issue the draw call
             GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
