@@ -14,6 +14,10 @@
 #include "Shader.h"
 #include "Texture.h"
 
+// GLM uses column major order, which is what OpenGL expects
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 ///////
 // MAIN
 ///////
@@ -83,6 +87,9 @@ int main(void)
         // Create and Bind the index buffer
         IndexBuffer ib(indicies, 6);
 
+		// Create an orthographic matrix
+		glm::mat4 proj = glm::ortho(-2.f, 2.f, -1.5f, 1.5f, -1.f, 1.f);
+
         // Load the shader source
         Shader shader("res/shaders/basic.shader");
 
@@ -91,6 +98,7 @@ int main(void)
 
         // Modify a uniform variable in the shader
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
+		shader.SetUniformMat4f("u_MVP", proj);
 
         Texture texture("res/textures/ChernoLogo.png");
         texture.Bind();
