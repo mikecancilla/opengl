@@ -64,6 +64,9 @@ int main(void)
 
         GLCall(glEnable(GL_BLEND));
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+//        GLCall(glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA));
+//        GLCall(glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR));
+//        GLCall(glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR));
 
         // Create and Bind the vertex array
         VertexArray va;
