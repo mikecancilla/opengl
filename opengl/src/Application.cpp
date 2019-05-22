@@ -87,7 +87,7 @@ int main(void)
         // Create and Bind the index buffer
         IndexBuffer ib(indicies, 6);
 
-		// Create an orthographic matrix
+		// Create an orthographic projection matrix
 		glm::mat4 proj = glm::ortho(-2.f, 2.f, -1.5f, 1.5f, -1.f, 1.f);
 
         // Load the shader source
