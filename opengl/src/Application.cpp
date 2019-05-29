@@ -18,6 +18,9 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
+
 ///////
 // MAIN
 ///////
@@ -55,10 +58,10 @@ int main(void)
 
     {
         float positions[] = {
-            -0.5f, -0.5f, 0.f, 0.f, // Bottom Left, 0
-             0.5f, -0.5f, 1.f, 0.f, // Bottom Right, 1
-             0.5f,  0.5f, 1.f, 1.f, // Top Right, 2
-            -0.5f,  0.5f, 0.f, 1.f  // Top Left, 3
+            -50.f, -50.f, 0.f, 0.f, // Bottom Left, 0
+             50.f, -50.f, 1.f, 0.f, // Bottom Right, 1
+             50.f,  50.f, 1.f, 1.f, // Top Right, 2
+			-50.f,  50.f, 0.f, 1.f  // Top Left, 3
         };
 
         unsigned int indicies[] = {
@@ -88,7 +91,13 @@ int main(void)
         IndexBuffer ib(indicies, 6);
 
 		// Create an orthographic projection matrix
-		glm::mat4 proj = glm::ortho(-2.f, 2.f, -1.5f, 1.5f, -1.f, 1.f);
+		glm::mat4 proj = glm::ortho(0.f, 960.f, 0.f, 540.f, -1.f, 1.f);
+
+		// Create the view and model
+		glm::mat4 view = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0));
+//		glm::mat4 model = glm::translate(glm::mat4(1.f), glm::vec3(200, 200, 0));
+
+//		glm::mat4 mvp = proj * view * model; // multiply in reverse order because all the matrice numbers are in column order
 
         // Load the shader source
         Shader shader("res/shaders/basic.shader");
@@ -98,7 +107,7 @@ int main(void)
 
         // Modify a uniform variable in the shader
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-		shader.SetUniformMat4f("u_MVP", proj);
+//		shader.SetUniformMat4f("u_MVP", mvp);
 
         Texture texture("res/textures/ChernoLogo.png");
         texture.Bind();
@@ -112,7 +121,14 @@ int main(void)
 
         Renderer renderer;
 
-        float r = 0.f;
+		ImGui::CreateContext();
+		ImGui_ImplGlfwGL3_Init(window, true);
+		ImGui::StyleColorsDark();
+
+		glm::vec3 translationA(200, 200, 0);
+		glm::vec3 translationB(400, 200, 0);
+
+		float r = 0.f;
         float increment = 0.05f;
 
         /* Loop until the user closes the window */
@@ -121,16 +137,31 @@ int main(void)
             /* Render here */
             renderer.Clear();
 
-            // Bind our shader
-            shader.Bind();
+			ImGui_ImplGlfwGL3_NewFrame();
+
+			{
+				glm::mat4 model = glm::translate(glm::mat4(1.f), translationA);
+				glm::mat4 mvp = proj * view * model; // multiply in reverse order because all the matrice numbers are in column order
+    			 // Bind our shader
+				shader.Bind();
+				shader.SetUniformMat4f("u_MVP", mvp);
+				renderer.Draw(va, ib, shader);
+			}
 
             // Modify a uniform variable in the shader
-            shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+            //shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
-            renderer.Draw(va, ib, shader);
+			{
+				glm::mat4 model = glm::translate(glm::mat4(1.f), translationB);
+				glm::mat4 mvp = proj * view * model; // multiply in reverse order because all the matrice numbers are in column order
+				// Bind our shader
+				shader.Bind();
+				shader.SetUniformMat4f("u_MVP", mvp);
+				renderer.Draw(va, ib, shader);
+			}
 
             // Issue the draw call
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+            //GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
             if(r > 1.f)
                 increment = -0.05f;
@@ -139,6 +170,17 @@ int main(void)
 
             r += increment;
 
+			// 1. Show a simple window.
+			// Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets automatically appears in a window called "Debug".
+			{
+				ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);
+				ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			}
+
+			ImGui::Render();
+			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+
             /* Swap front and back buffers */
             GLCall(glfwSwapBuffers(window));
 
@@ -146,6 +188,9 @@ int main(void)
             GLCall(glfwPollEvents());
         }
     }
+
+	ImGui_ImplGlfwGL3_Shutdown();
+	ImGui::DestroyContext();
 
     glfwTerminate();
 
