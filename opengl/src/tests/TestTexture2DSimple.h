@@ -13,7 +13,7 @@ namespace test {
 	class TestTexture2DSimple : public Test
 	{
 	public:
-		TestTexture2DSimple(int windowWidth, int windowHeight);
+		TestTexture2DSimple(GLFWwindow* pWindow);
 		~TestTexture2DSimple();
 
 		void OnUpdate(float deltaTime) override;

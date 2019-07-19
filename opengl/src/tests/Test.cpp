@@ -1,9 +1,17 @@
 #include "Test.h"
 #include "imgui/imgui.h"
+#include "GLFW/glfw3.h"
 
 namespace test {
-	TestMenu::TestMenu(Test* &currentTestPointer)
-		: m_CurrentTest(currentTestPointer)
+	Test::Test(GLFWwindow* pWindow)
+        : m_pWindow(pWindow)
+    {
+        glfwGetWindowSize(m_pWindow, &m_windowWidth, &m_windowHeight);
+    }
+
+    TestMenu::TestMenu(Test* &currentTestPointer, GLFWwindow* pWindow)
+		: Test(pWindow)
+        , m_CurrentTest(currentTestPointer)
 	{
 	}
 

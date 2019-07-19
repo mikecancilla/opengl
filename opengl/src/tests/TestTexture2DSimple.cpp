@@ -7,8 +7,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 namespace test {
-	TestTexture2DSimple::TestTexture2DSimple(int windowWidth, int windowHeight)
-		: Test(windowWidth, windowHeight)
+	TestTexture2DSimple::TestTexture2DSimple(GLFWwindow* pWindow)
+		: Test(pWindow)
 		, m_Proj(glm::ortho(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f))
 		, m_View(glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0)))
 	{

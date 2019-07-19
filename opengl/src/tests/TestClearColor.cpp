@@ -2,10 +2,11 @@
 
 #include "Renderer.h"
 #include "imgui/imgui.h"
+#include "GLFW/glfw3.h"
 
 namespace test {
-	TestClearColor::TestClearColor(int windowWidth, int windowHeight)
-		: Test(windowWidth, windowHeight)
+	TestClearColor::TestClearColor(GLFWwindow* pWindow)
+		: Test(pWindow)
         , m_ClearColor{ .2f, .3f, .8f, 1.f }
 	{
 	}

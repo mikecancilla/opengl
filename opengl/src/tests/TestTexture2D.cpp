@@ -6,12 +6,13 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "GLFW/glfw3.h"
+
 namespace test {
-	TestTexture2D::TestTexture2D(int windowWidth, int windowHeight)
-		: Test(windowWidth, windowHeight)
+	TestTexture2D::TestTexture2D(GLFWwindow* pWindow)
+		: Test(pWindow)
 		, m_TranslationA(200, 200, 0)
 		, m_TranslationB(400, 200, 0)
-		, m_Proj(glm::ortho(0.f, (float) windowWidth, 0.f, (float) windowHeight, -1.f, 1.f))
 		, m_View(glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0)))
 	{
 		// Create the shader
@@ -26,11 +27,13 @@ namespace test {
 		m_Texture = std::make_unique<Texture>("res/textures/ChernoLogo.png");
 		m_Shader->SetUniform1i("u_Texture", 0);
 
+        m_Proj = glm::ortho(0.f, (float) m_windowWidth, 0.f, (float) m_windowHeight, -1.f, 1.f);
+
         float positions[] = {
-                      0,            0, 0.f, 0.f, // Bottom Left, 0
-			windowWidth,            0, 1.f, 0.f, // Bottom Right, 1
-			windowWidth, windowHeight, 1.f, 1.f, // Top Right, 2
-			          0, windowHeight, 0.f, 1.f  // Top Left, 3
+                        0,              0, 0.f, 0.f, // Bottom Left, 0
+			m_windowWidth,              0, 1.f, 0.f, // Bottom Right, 1
+			m_windowWidth, m_windowHeight, 1.f, 1.f, // Top Right, 2
+                        0, m_windowHeight, 0.f, 1.f  // Top Left, 3
 		};
 
 		unsigned short indicies[] = {
@@ -78,12 +81,17 @@ namespace test {
 		//glm::mat4 proj = glm::ortho(0.f, 1200.f, 0.f, 600.f, -1.f, 1.f);
 		//glm::mat4 view = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0));
 
-		{
+        {
+            glfwGetWindowSize(m_pWindow, &m_windowWidth, &m_windowHeight);
+
 			//glm::mat4 model = glm::translate(glm::mat4(1.f), m_TranslationA);
-			//glm::mat4 model = glm::scale(glm::mat4(1.f), glm::vec3(m_windowWidth/50.0, m_windowHeight/50.0, 0));
+            float wScale = (float) m_windowWidth/ (float) 1200;
+            float hScale = (float) m_windowHeight/ (float) 600;
+			glm::mat4 model = glm::scale(glm::mat4(1.f), glm::vec3(wScale, hScale, 0));
 			//model += glm::translate(glm::mat4(1.f), m_TranslationA);
-			glm::mat4 model = glm::mat4(1.f);
-			glm::mat4 mvp = m_Proj;// * m_View * model; // multiply in reverse order because all the matrice numbers are in column order
+			//glm::mat4 model = glm::mat4(1.f);
+			glm::mat4 mvp = m_Proj * model; // multiply in reverse order because all the matrice numbers are in column order
+			//glm::mat4 mvp = m_Proj;// * m_View * model; // multiply in reverse order because all the matrice numbers are in column order
 												 // Bind our shader
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
