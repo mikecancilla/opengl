@@ -7,7 +7,7 @@ namespace test {
 	class TestClearColor : public Test
 	{
 	public:
-		TestClearColor();
+		TestClearColor(int windowWidth, int windowHeight);
 		~TestClearColor();
 
 		void OnUpdate(float deltaTime) override;

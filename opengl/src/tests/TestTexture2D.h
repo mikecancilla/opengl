@@ -13,7 +13,7 @@ namespace test {
 	class TestTexture2D : public Test
 	{
 	public:
-		TestTexture2D();
+		TestTexture2D(int windowWidth, int windowHeight);
 		~TestTexture2D();
 
 		void OnUpdate(float deltaTime) override;

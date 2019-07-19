@@ -23,6 +23,10 @@
 
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture2D.h"
+#include "tests/TestTexture2DSimple.h"
+
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 600
 
 ///////
 // MAIN
@@ -42,7 +46,8 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1200, 600, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello World", NULL, NULL);
+//    window = glfwCreateWindow(940, 565, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -73,8 +78,9 @@ int main(void)
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 
-		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
-		testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+		testMenu->RegisterTest<test::TestClearColor>("Clear Color", WINDOW_WIDTH, WINDOW_HEIGHT);
+		testMenu->RegisterTest<test::TestTexture2D>("2D Texture", WINDOW_WIDTH, WINDOW_HEIGHT);
+		testMenu->RegisterTest<test::TestTexture2DSimple>("2D Texture Simple", WINDOW_WIDTH, WINDOW_HEIGHT);
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))

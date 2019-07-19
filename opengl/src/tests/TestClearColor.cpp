@@ -4,8 +4,9 @@
 #include "imgui/imgui.h"
 
 namespace test {
-	TestClearColor::TestClearColor()
-		: m_ClearColor{ .2f, .3f, .8f, 1.f }
+	TestClearColor::TestClearColor(int windowWidth, int windowHeight)
+		: Test(windowWidth, windowHeight)
+        , m_ClearColor{ .2f, .3f, .8f, 1.f }
 	{
 	}
 

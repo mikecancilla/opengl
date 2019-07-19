@@ -10,11 +10,11 @@
 
 namespace test {
 
-	class TestTexture2D : public Test
+	class TestTexture2DSimple : public Test
 	{
 	public:
-		TestTexture2D();
-		~TestTexture2D();
+		TestTexture2DSimple(int windowWidth, int windowHeight);
+		~TestTexture2DSimple();
 
 		void OnUpdate(float deltaTime) override;
 		void OnRender() override;
@@ -28,6 +28,5 @@ namespace test {
 		std::unique_ptr<Texture> m_Texture;
 
 		glm::mat4 m_Proj, m_View;
-		glm::vec3 m_TranslationA, m_TranslationB;
 	};
 }

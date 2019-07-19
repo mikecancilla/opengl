@@ -8,12 +8,19 @@ namespace test {
 	class Test
 	{
 	public:
-		Test() {}
+		Test(int windowWidth = 960, int windowHeight = 540)
+        : m_windowWidth(windowWidth)
+        , m_windowHeight(windowHeight)
+        {}
+
 		virtual ~Test() {}
 
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}
+
+        int m_windowWidth;
+        int m_windowHeight;
 	};
 
 	class TestMenu : public Test
@@ -24,11 +31,11 @@ namespace test {
 		void OnImGuiRender() override;
 
 		template<typename T>
-		void RegisterTest(const std::string& name)
+		void RegisterTest(const std::string& name, unsigned int windowWidth, unsigned int windowHeight)
 		{
 			std::cout << "Registering test " << name << std::endl;
 
-			m_Tests.push_back(std::make_pair(name, []() { return new T(); }));
+			m_Tests.push_back(std::make_pair(name, [windowWidth, windowHeight]() { return new T(windowWidth, windowHeight); }));
 		}
 
 	private:
