@@ -1,4 +1,4 @@
-#include "TestTexture2D.h"
+#include "TestTexture2DSimple.h"
 
 #include "Renderer.h"
 #include "imgui/imgui.h"
@@ -7,18 +7,15 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 namespace test {
-	TestTexture2D::TestTexture2D()
-		: m_TranslationA(200, 200, 0)
-		, m_TranslationB(400, 200, 0)
-		, m_Proj(glm::ortho(0.f, 960.f, 0.f, 540.f, -1.f, 1.f))
+	TestTexture2DSimple::TestTexture2DSimple()
+		: m_Proj(glm::ortho(0.f, 960.f, 0.f, 540.f, -1.f, 1.f))
 		, m_View(glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0)))
 	{
-
         float positions[] = {
-			-50.f, -50.f, 0.f, 0.f, // Bottom Left, 0
-			 50.f, -50.f, 1.f, 0.f, // Bottom Right, 1
-			 50.f,  50.f, 1.f, 1.f, // Top Right, 2
-			-50.f,  50.f, 0.f, 1.f  // Top Left, 3
+			0.f, 0.f, // Bottom Left, 0
+			1.f, 0.f, // Bottom Right, 1
+			1.f, 1.f, // Top Right, 2
+			0.f, 1.f  // Top Left, 3
 		};
 
 		unsigned int indicies[] = {
@@ -33,14 +30,14 @@ namespace test {
 		m_VAO = std::make_unique<VertexArray>();
 
 		// Create and Bind the vertex buffer
-		m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 4 * 4 * sizeof(float));
+		m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 2 * 4 * sizeof(float));
 
 		// Define the layout of the vertex buffer memory
 		VertexBufferLayout layout;
 		layout.Push<float>(2);
-		layout.Push<float>(2);
 
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
+
 		// Create and Bind the index buffer
 		m_IndexBuffer = std::make_unique<IndexBuffer>(indicies, 6);
 
@@ -54,18 +51,19 @@ namespace test {
 		m_Shader->SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 
 		m_Texture = std::make_unique<Texture>("res/textures/ChernoLogo.png");
+
 		m_Shader->SetUniform1i("u_Texture", 0);
 	}
 
-	TestTexture2D::~TestTexture2D()
+	TestTexture2DSimple::~TestTexture2DSimple()
 	{
 	}
 
-	void TestTexture2D::OnUpdate(float deltaTime)
+	void TestTexture2DSimple::OnUpdate(float deltaTime)
 	{
 	}
 
-	void TestTexture2D::OnRender()
+	void TestTexture2DSimple::OnRender()
 	{
 		GLCall(glClearColor(0.f, 0.f, 0.f, 1.f));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
@@ -97,7 +95,7 @@ namespace test {
 
 	}
 
-	void TestTexture2D::OnImGuiRender()
+	void TestTexture2DSimple::OnImGuiRender()
 	{
 		ImGui::SliderFloat3("Translation A", &m_TranslationA.x, 0.0f, 1200.0f);
 		ImGui::SliderFloat3("Translation B", &m_TranslationB.x, 0.0f, 1200.0f);
