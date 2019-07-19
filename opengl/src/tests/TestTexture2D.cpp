@@ -14,7 +14,7 @@ namespace test {
 		, m_View(glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0)))
 	{
 
-		float positions[] = {
+        float positions[] = {
 			-50.f, -50.f, 0.f, 0.f, // Bottom Left, 0
 			 50.f, -50.f, 1.f, 0.f, // Bottom Right, 1
 			 50.f,  50.f, 1.f, 1.f, // Top Right, 2
@@ -74,8 +74,8 @@ namespace test {
 
 		m_Texture->Bind();
 
-		glm::mat4 proj = glm::ortho(0.f, 960.f, 0.f, 540.f, -1.f, 1.f);
-		glm::mat4 view = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0));
+		//glm::mat4 proj = glm::ortho(0.f, 1200.f, 0.f, 600.f, -1.f, 1.f);
+		//glm::mat4 view = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0));
 
 		{
 			glm::mat4 model = glm::translate(glm::mat4(1.f), m_TranslationA);
@@ -99,8 +99,8 @@ namespace test {
 
 	void TestTexture2D::OnImGuiRender()
 	{
-		ImGui::SliderFloat3("Translation A", &m_TranslationA.x, 0.0f, 960.0f);
-		ImGui::SliderFloat3("Translation B", &m_TranslationB.x, 0.0f, 960.0f);
+		ImGui::SliderFloat3("Translation A", &m_TranslationA.x, 0.0f, 1200.0f);
+		ImGui::SliderFloat3("Translation B", &m_TranslationB.x, 0.0f, 1200.0f);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 }
