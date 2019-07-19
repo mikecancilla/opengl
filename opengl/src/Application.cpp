@@ -75,12 +75,12 @@ int main(void)
 		ImGui::StyleColorsDark();
 
 		test::Test* currentTest = nullptr;
-		test::TestMenu* testMenu = new test::TestMenu(currentTest);
+		test::TestMenu* testMenu = new test::TestMenu(currentTest, window);
 		currentTest = testMenu;
 
-		testMenu->RegisterTest<test::TestClearColor>("Clear Color", WINDOW_WIDTH, WINDOW_HEIGHT);
-		testMenu->RegisterTest<test::TestTexture2D>("2D Texture", WINDOW_WIDTH, WINDOW_HEIGHT);
-		testMenu->RegisterTest<test::TestTexture2DSimple>("2D Texture Simple", WINDOW_WIDTH, WINDOW_HEIGHT);
+		testMenu->RegisterTest<test::TestClearColor>("Clear Color", window);
+		testMenu->RegisterTest<test::TestTexture2D>("2D Texture", window);
+		testMenu->RegisterTest<test::TestTexture2DSimple>("2D Texture Simple", window);
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
